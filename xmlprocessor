@@ -1,0 +1,153 @@
+#! /bin/bash
+
+XML_FILE=$1
+XML_FILE_WITHOUT_EXTENSION=${XML_FILE%%.*}
+LOG_FILE=$XML_FILE_WITHOUT_EXTENSION.log
+DATE=`date +%Y.%m.%d-%H.%M.%S`
+COPY_FILE=$XML_FILE_WITHOUT_EXTENSION.$DATE.copy
+DTD_FILE=$XML_FILE_WITHOUT_EXTENSION.dtd
+XSD_FILE=$XML_FILE_WITHOUT_EXTENSION.xsd
+RNG_FILE=$XML_FILE_WITHOUT_EXTENSION.rng
+SCH_FILE=$XML_FILE_WITHOUT_EXTENSION.sch
+XSLT_FILE=$XML_FILE_WITHOUT_EXTENSION.xsl
+HTML_FILE=$XML_FILE_WITHOUT_EXTENSION.html
+
+compruebaSiExisteElFichero() {
+
+  if [ ! -e $XML_FILE ]; then
+    echo "No existe el fichero '$XML_FILE'"
+    exit 1
+  fi
+}
+
+creaCopiaDeSeguridad() {
+
+  cp $XML_FILE $COPY_FILE
+  echo "Creada la copia de seguridad '$COPY_FILE'"
+}
+
+validaDTD() {
+
+  xmllint --dtdvalid $DTD_FILE $XML_FILE >  $LOG_FILE
+
+  if  [ $? != 0 ]; then
+    cat $LOG_FILE
+    exit 2
+  fi
+  echo "El XML '$XML_FILE' es váido según la DTD '$DTD_FILE'"
+}
+
+compruebaDTD() {
+
+  if [ -e $DTD_FILE ]; then
+    validaDTD
+  else
+    echo "No existe el DTD '$DTD_FILE'"
+  fi
+}
+
+validaXSD() {
+
+  xmllint --schema $XSD_FILE $XML_FILE >  $LOG_FILE
+
+  if  [ $? != 0 ]; then
+    cat $LOG_FILE
+    exit 3
+  fi
+  echo "El XML '$XML_FILE' es váido según el XSD '$XSD_FILE'"
+}
+
+compruebaXSD() {
+
+  if [ -e $XSD_FILE ]; then
+    validaXSD
+  else
+    echo "No existe el XSD '$XSD_FILE'"
+  fi
+}
+
+validaRNG() {
+
+  xmllint --relaxng $RNG_FILE $XML_FILE >  $LOG_FILE
+
+  if  [ $? != 0 ]; then
+    cat $LOG_FILE
+    exit 4
+  fi
+  echo "El XML '$XML_FILE' es váido según el RNG '$RNG_FILE'"
+}
+
+compruebaRNG() {
+
+  if [ -e $RNG_FILE ]; then
+    validaRNG
+  else
+    echo "No existe el RNG '$RNG_FILE'"
+  fi
+}
+
+validaSCH() {
+
+  xmllint --relaxng $SCH_FILE $XML_FILE >  $LOG_FILE
+
+  if  [ $? != 0 ]; then
+    cat $LOG_FILE
+    exit 5
+  fi
+  echo "El XML '$XML_FILE' es váido según el SCH '$SCH_FILE'"
+}
+
+compruebaSCH() {
+
+  if [ -e $SCH_FILE ]; then
+    validaSCH
+  else
+    echo "No existe el SCH '$SCH_FILE'"
+  fi
+}
+
+transformaConXSLT() {
+
+    xsltform $XSLT_FILE $XML_FILE >  $HTM_FILE
+
+    if  [ $? != 0 ]; then
+      cat $LOG_FILE
+      exit 6
+    fi
+    echo "El XML '$XML_FILE' ha sido transformado con el XSLT '$XSLT_FILE' en '$HTM_FILE'"
+}
+
+compruebaXSLT() {
+
+  if [ -e $XSLT_FILE ]; then
+    transformaConXSLT
+  else
+    echo "No existe el XSLT '$XSLT_FILE'"
+  fi
+}
+
+formateaXML() {
+
+  xmllint --format $COPY_FILE > $XML_FILE
+  if  [ $? != 0 ]; then
+    cp $COPY_FILE $XML_FILE
+    echo "Error formateando el XML '$XML_FILE'"
+    exit 7
+  else
+    echo "XML '$XML_FILE' formateado"
+  fi
+}
+
+main() {
+
+  compruebaSiExisteElFichero
+  creaCopiaDeSeguridad
+  compruebaDTD
+  compruebaXSD
+  compruebaRNG
+  compruebaSCH
+  compruebaXSLT
+  formateaXML
+}
+
+main
