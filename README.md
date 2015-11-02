@@ -2,18 +2,18 @@
 
 ## Requisitos
 
-- Tienes que tener instalado xmllint (que está en el paquete libxml2-utils) y xsltform
+- Tienes que tener instalado **xmllint** (que está en el paquete libxml2-utils) y **xsltform**.
 
 ```
-sudo apt-get install libxml2-utils
-sudo apt-get install xsltproc
+$ sudo apt-get install libxml2-utils
+$ sudo apt-get install xsltproc
 ```
-- Añade xmlprocessor al PATH
+- Añade xmlprocessor al **PATH**.
 
 ## Ejecución
 
 ```
-xmlprocessor fichero.xml
+$ xmlprocessor fichero.xml
 ```
 
 1. Comprueba que existe 'fichero.xml'.
