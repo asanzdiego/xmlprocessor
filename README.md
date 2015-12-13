@@ -18,7 +18,7 @@ Script que realiza las siguientes operaciones con el fichero XML pasado por par�
 ## Requisitos
 
 1. Añade xmlprocessor al **PATH**.
-1. Tienes que tener instalado **xmllint** (que está en el paquete libxml2-utils) y **xsltform**.
+1. Tienes que tener instalado **xmllint** (que está en el paquete libxml2-utils) y **xsltproc**.
 
 ```
 $ sudo apt-get install libxml2-utils

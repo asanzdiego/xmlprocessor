@@ -31,7 +31,7 @@ validaDTD() {
   xmllint --dtdvalid $DTD_FILE $XML_FILE >  $LOG_FILE
 
   if  [ $? != 0 ]; then
-    cat $LOG_FILE
+    "El XML '$XML_FILE' NO es váido según la DTD '$DTD_FILE'"
     exit 2
   fi
   echo "El XML '$XML_FILE' es váido según la DTD '$DTD_FILE'"
@@ -51,7 +51,7 @@ validaXSD() {
   xmllint --schema $XSD_FILE $XML_FILE >  $LOG_FILE
 
   if  [ $? != 0 ]; then
-    cat $LOG_FILE
+    echo "El XML '$XML_FILE' NO es váido según el XSD '$XSD_FILE'"
     exit 3
   fi
   echo "El XML '$XML_FILE' es váido según el XSD '$XSD_FILE'"
@@ -71,7 +71,7 @@ validaRNG() {
   xmllint --relaxng $RNG_FILE $XML_FILE >  $LOG_FILE
 
   if  [ $? != 0 ]; then
-    cat $LOG_FILE
+    echo "El XML '$XML_FILE' NO es váido según el RNG '$RNG_FILE'"
     exit 4
   fi
   echo "El XML '$XML_FILE' es váido según el RNG '$RNG_FILE'"
@@ -91,7 +91,7 @@ validaSCH() {
   xmllint --relaxng $SCH_FILE $XML_FILE >  $LOG_FILE
 
   if  [ $? != 0 ]; then
-    cat $LOG_FILE
+    echo "El XML '$XML_FILE' NO es váido según el SCH '$SCH_FILE'"
     exit 5
   fi
   echo "El XML '$XML_FILE' es váido según el SCH '$SCH_FILE'"
@@ -108,13 +108,15 @@ compruebaSCH() {
 
 transformaConXSLT() {
 
-    xsltform $XSLT_FILE $XML_FILE >  $HTM_FILE
+    echo "<!DOCTYPE html>" > $HTML_FILE
+    
+    xsltproc $XSLT_FILE $XML_FILE >> $HTML_FILE
 
     if  [ $? != 0 ]; then
-      cat $LOG_FILE
+      echo "El XML '$XML_FILE' NO ha sido transformado con el XSLT '$XSLT_FILE' en '$HTML_FILE'"
       exit 6
     fi
-    echo "El XML '$XML_FILE' ha sido transformado con el XSLT '$XSLT_FILE' en '$HTM_FILE'"
+    echo "El XML '$XML_FILE' ha sido transformado con el XSLT '$XSLT_FILE' en '$HTML_FILE'"
 }
 
 compruebaXSLT() {
